@@ -4,18 +4,18 @@ MandelbrotModel::MandelbrotModel()
 {
     options = new FractalOptions();
     options->maxIterations = 1000;
-    options->width = 400;
-    options->height = 400;
+    options->width = 800;
+    options->height = 600;
 
     palette = new QRgb[options->maxIterations];
     pixels = new QRgb[options->width * options->height];
 
     buildPalette();
 
-    plane.minX = -2.5f;
-    plane.maxX = 1.f;
-    plane.minY = -1.f;
-    plane.maxY = 1.f;
+    plane.minX = -2.4f;
+    plane.maxX = 0.9f;
+    plane.minY = -1.2f;
+    plane.maxY = 1.2f;
 }
 
 void MandelbrotModel::buildPalette()
@@ -24,7 +24,14 @@ void MandelbrotModel::buildPalette()
 
     for (int i = 0; i < options->maxIterations; i++)
     {
-        r = i * (100.f / options->maxIterations) + 155;
+        if (i > 15)
+        {
+            r = 205;
+        }
+        else
+        {
+            r = 40;
+        }
         palette[i] = qRgb(r, 20, 20);
     }
 }
@@ -34,6 +41,7 @@ void MandelbrotModel::generate()
 {
     float x0, y0, x, y, sX, sY, xTmp;
     int i;
+    int pointCount = 0;
 
     sX = (plane.maxX - plane.minX) / options->width;
     sY = (plane.maxY - plane.minY) / options->height;
@@ -56,7 +64,8 @@ void MandelbrotModel::generate()
                 i++;
             }
 
-            pixels[px + py * options->height] = palette[i];
+            pixels[px + py * options->width] = palette[i];
+            pointCount++;
         }
     }
 }
