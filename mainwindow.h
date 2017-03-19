@@ -2,8 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QDebug>
 
 class FractalWidget;
+class MandelbrotModel;
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +25,7 @@ private slots:
 private:
     Ui::MainWindow* ui;
     FractalWidget* fractalWidget;
+    MandelbrotModel* mandelbrotModel;
 };
 
 #endif // MAINWINDOW_H

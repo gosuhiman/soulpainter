@@ -25,9 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    fractalwidget.cpp
+    fractalwidget.cpp \
+    renderarea.cpp \
+    mandelbrotmodel.cpp
 
 HEADERS  += mainwindow.h \
-    fractalwidget.h
+    fractalwidget.h \
+    renderarea.h \
+    mandelbrotmodel.h
 
 FORMS    += mainwindow.ui

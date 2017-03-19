@@ -2,51 +2,26 @@
 #define FRACTALWIDGET_H
 
 #include <QWidget>
-#include <QImage>
-#include <QPainter>
-#include <QDebug>
+#include <QGridLayout>
 
-struct FractalOptions
-{
-    int maxIterations;
-};
-
-struct ComplexPlane
-{
-    float minX;
-    float maxX;
-    float minY;
-    float maxY;
-};
-
-struct Step
-{
-    float x;
-    float y;
-};
+class RenderArea;
+class MandelbrotModel;
 
 class FractalWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FractalWidget(QWidget *parent = 0);
-    void setOptions(FractalOptions newOptions);
-    void paintEvent(QPaintEvent *event);
-    void resizeEvent(QResizeEvent *event);
-    void draw();
+    explicit FractalWidget(QWidget* parent = 0, MandelbrotModel* _mandelbrotModel = 0);
 
 signals:
 
 public slots:
 
-private:
-    FractalOptions options;
-    QRgb* pixels;
-    QImage* image;
-    ComplexPlane plane;
-    QRgb* palette;
+protected:
 
-    void buildPalette();
+private:
+    MandelbrotModel* mandelbrotModel;
+    RenderArea* renderArea;
 };
 
 #endif // FRACTALWIDGET_H
