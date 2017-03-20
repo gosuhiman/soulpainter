@@ -78,8 +78,6 @@ void MandelbrotModel::zoomIn(float x, float y)
     x = x * (viewport.maxX - viewport.minX) / options->width + viewport.minX;
     y = y * (viewport.maxY - viewport.minY) / options->height + viewport.minY;
 
-    qDebug() << x << y;
-
     float halfNewRangeX = std::abs(viewport.maxX - viewport.minX) / 4;
     float halfNewRangeY = std::abs(viewport.maxY - viewport.minY) / 4;
 
@@ -87,8 +85,6 @@ void MandelbrotModel::zoomIn(float x, float y)
     viewport.maxX = x + halfNewRangeX;
     viewport.minY = y - halfNewRangeY;
     viewport.maxY = y + halfNewRangeY;
-
-    qDebug() << viewport.minX << viewport.maxX << viewport.minY << viewport.maxX;
 
     generate();
 }
