@@ -27,14 +27,7 @@ void MandelbrotModel::buildPalette()
 
     for (int i = 0; i < options->maxIterations; i++)
     {
-        if (i > 15)
-        {
-            r = 205;
-        }
-        else
-        {
-            r = 40;
-        }
+        r =  i * 205.f / options->maxIterations + 50;
         palette[i] = qRgb(r, 20, 20);
     }
 }
@@ -42,7 +35,7 @@ void MandelbrotModel::buildPalette()
 
 void MandelbrotModel::generate()
 {
-    float x0, y0, x, y, sX, sY, xTmp;
+    double x0, y0, x, y, sX, sY, xTmp;
     int i;
     int pointCount = 0;
 
