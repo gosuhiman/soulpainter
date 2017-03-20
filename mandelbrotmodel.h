@@ -25,11 +25,13 @@ public:
     MandelbrotModel();
     void buildPalette();
     void generate();
+    void zoomIn(float x, float y);
 
     void onResize();
 
     FractalOptions* options;
     ComplexPlane plane;
+    ComplexPlane viewport;
     QRgb* palette;
     QRgb* pixels;
 };

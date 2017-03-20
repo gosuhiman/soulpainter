@@ -33,3 +33,10 @@ void RenderArea::resizeEvent(QResizeEvent *)
     mandelbrotModel->options->height = height();
     mandelbrotModel->onResize();
 }
+
+void RenderArea::mousePressEvent(QMouseEvent *event)
+{
+    QPoint clickedPoint = event->pos();
+    mandelbrotModel->zoomIn(clickedPoint.x(), clickedPoint.y());
+    this->repaint();
+}

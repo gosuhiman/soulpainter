@@ -1,4 +1,5 @@
 #include "mandelbrotmodel.h"
+#include <cmath>
 
 MandelbrotModel::MandelbrotModel()
 {
@@ -16,6 +17,8 @@ MandelbrotModel::MandelbrotModel()
     plane.maxX = 0.9f;
     plane.minY = -1.2f;
     plane.maxY = 1.2f;
+
+    viewport = plane;
 }
 
 void MandelbrotModel::buildPalette()
@@ -43,15 +46,15 @@ void MandelbrotModel::generate()
     int i;
     int pointCount = 0;
 
-    sX = (plane.maxX - plane.minX) / options->width;
-    sY = (plane.maxY - plane.minY) / options->height;
+    sX = (viewport.maxX - viewport.minX) / options->width;
+    sY = (viewport.maxY - viewport.minY) / options->height;
 
     for (int px = 0; px < options->width; px++)
     {
         for (int py = 0; py < options->height; py++)
         {
-            x0 = px * sX + plane.minX;
-            y0 = py * sY + plane.minY;
+            x0 = px * sX + viewport.minX;
+            y0 = py * sY + viewport.minY;
             x = 0;
             y = 0;
             i = 0;
@@ -68,6 +71,26 @@ void MandelbrotModel::generate()
             pointCount++;
         }
     }
+}
+
+void MandelbrotModel::zoomIn(float x, float y)
+{
+    x = x * (viewport.maxX - viewport.minX) / options->width + viewport.minX;
+    y = y * (viewport.maxY - viewport.minY) / options->height + viewport.minY;
+
+    qDebug() << x << y;
+
+    float halfNewRangeX = std::abs(viewport.maxX - viewport.minX) / 4;
+    float halfNewRangeY = std::abs(viewport.maxY - viewport.minY) / 4;
+
+    viewport.minX = x - halfNewRangeX;
+    viewport.maxX = x + halfNewRangeX;
+    viewport.minY = y - halfNewRangeY;
+    viewport.maxY = y + halfNewRangeY;
+
+    qDebug() << viewport.minX << viewport.maxX << viewport.minY << viewport.maxX;
+
+    generate();
 }
 
 void MandelbrotModel::onResize()

@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QDebug>
+#include <QMouseEvent>
 
 class MandelbrotModel;
 
@@ -22,8 +23,9 @@ signals:
 public slots:
 
 protected:
-    void paintEvent(QPaintEvent *event);
-    void resizeEvent(QResizeEvent *event);
+    void paintEvent(QPaintEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
 private:
     MandelbrotModel* mandelbrotModel;
