@@ -12,7 +12,7 @@ MandelbrotModel::MandelbrotModel()
     options->width = 800;
     options->height = 600;
     options->zoomAmmount = 3;
-    options->threadCount = 4;
+    options->threadCount = 10;
 
     palette = new QRgb[options->maxIterations];
     pixels = new QRgb[options->width * options->height];
@@ -74,7 +74,6 @@ void MandelbrotModel::generatePart(int fromX, int toX)
             mtx.unlock();
         }
     }
-    qDebug() << "generatePart finish" << fromX << toX;
 }
 
 int MandelbrotModel::getIterationCount(Complex c, Complex z)
