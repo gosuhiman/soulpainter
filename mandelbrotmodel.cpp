@@ -1,4 +1,9 @@
 #include "mandelbrotmodel.h"
+#include <thread>
+#include <mutex>
+#include <chrono>
+
+std::mutex mtx;
 
 MandelbrotModel::MandelbrotModel()
 {
@@ -7,6 +12,7 @@ MandelbrotModel::MandelbrotModel()
     options->width = 800;
     options->height = 600;
     options->zoomAmmount = 3;
+    options->threadCount = 4;
 
     palette = new QRgb[options->maxIterations];
     pixels = new QRgb[options->width * options->height];
@@ -28,29 +34,60 @@ void MandelbrotModel::buildPalette()
     }
 }
 
-
 void MandelbrotModel::generate()
 {
-    Complex c, z;
-    int i;
+    auto start = std::chrono::steady_clock::now();
 
-    for (int px = 0; px < options->width; px++)
+    int sizeX = options->width / options->threadCount;
+    int fromX, toX;
+
+    std::vector<std::thread> threads;
+
+    for (int t = 0; t < options->threadCount; t++)
+    {
+        fromX = t * sizeX;
+        toX = fromX + sizeX;
+        std::thread thread(&MandelbrotModel::generatePart, this, fromX, toX);
+        threads.push_back(std::move(thread));
+    }
+
+    for (int t = 0; t < options->threadCount; t++)
+    {
+        threads[t].join();
+    }
+
+    auto end = std::chrono::steady_clock::now();
+    qDebug() << "time =" << std::chrono::duration<double, std::milli> (end - start).count() << "milliseconds";
+}
+
+void MandelbrotModel::generatePart(int fromX, int toX)
+{
+    for (int px = fromX; px < toX; px++)
     {
         for (int py = 0; py < options->height; py++)
         {
-            c = transformToComplexPlane(px, py);
-            z = Complex(0);
-            i = 0;
-
-            while(abs(z) < 2 && i < options->maxIterations)
-            {
-                z = z*z + c;
-                i++;
-            }
-
+            Complex c = transformToComplexPlane(px, py);
+            Complex z = Complex(0);
+            int i = getIterationCount(c, z);
+            mtx.lock();
             pixels[px + py * options->width] = palette[i];
+            mtx.unlock();
         }
     }
+    qDebug() << "generatePart finish" << fromX << toX;
+}
+
+int MandelbrotModel::getIterationCount(Complex c, Complex z)
+{
+    int i = 0;
+
+    while(abs(z) < 2 && i < options->maxIterations)
+    {
+        z = z*z + c;
+        i++;
+    }
+
+    return i;
 }
 
 void MandelbrotModel::zoomIn(float x, float y)

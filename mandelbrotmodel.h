@@ -14,6 +14,7 @@ struct FractalOptions
     int width;
     int height;
     int zoomAmmount;
+    int threadCount;
 };
 
 template<typename T> class ComplexPlane
@@ -55,6 +56,8 @@ public:
 
 private:
     Complex transformToComplexPlane(int x, int y);
+    void generatePart(int fromX, int toX);
+    int getIterationCount(Complex c, Complex z);
 };
 
 #endif // MANDELBROTMODEL_H
