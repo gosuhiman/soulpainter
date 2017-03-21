@@ -12,7 +12,7 @@ MandelbrotModel::MandelbrotModel()
     options->width = 800;
     options->height = 600;
     options->zoomAmmount = 3;
-    options->threadCount = 10;
+    options->threadCount = 8;
 
     palette = new QRgb[options->maxIterations];
     pixels = new QRgb[options->width * options->height];
@@ -21,6 +21,16 @@ MandelbrotModel::MandelbrotModel()
 
     defaultViewport = ComplexPlane<double>(-2.4, -1.2, 0.9, 1.2);
     viewport = defaultViewport;
+
+    setProgress(0);
+}
+
+void MandelbrotModel::setProgress(float progress)
+{
+    if (progress != _progress) {
+        _progress = progress;
+        emit progressChanged(progress);
+    }
 }
 
 void MandelbrotModel::buildPalette()
@@ -38,16 +48,19 @@ void MandelbrotModel::generate()
 {
     auto start = std::chrono::steady_clock::now();
 
-    int sizeX = options->width / options->threadCount;
-    int fromX, toX;
+    setProgress(0);
 
     std::vector<std::thread> threads;
+    std::queue<int> tasks;
+
+    for (int py = 0; py < options->height; py++)
+    {
+        tasks.push(py);
+    }
 
     for (int t = 0; t < options->threadCount; t++)
     {
-        fromX = t * sizeX;
-        toX = fromX + sizeX;
-        std::thread thread(&MandelbrotModel::generatePart, this, fromX, toX);
+        std::thread thread(&MandelbrotModel::workOnTasks, this, &tasks);
         threads.push_back(std::move(thread));
     }
 
@@ -56,23 +69,33 @@ void MandelbrotModel::generate()
         threads[t].join();
     }
 
+    setProgress(1);
+
     auto end = std::chrono::steady_clock::now();
     qDebug() << "time =" << std::chrono::duration<double, std::milli> (end - start).count() << "milliseconds";
 }
 
-void MandelbrotModel::generatePart(int fromX, int toX)
+void MandelbrotModel::workOnTasks(std::queue<int>* tasks)
 {
-    for (int px = fromX; px < toX; px++)
+    while (tasks->size() > 0)
     {
-        for (int py = 0; py < options->height; py++)
-        {
-            Complex c = transformToComplexPlane(px, py);
-            Complex z = Complex(0);
-            int i = getIterationCount(c, z);
-            mtx.lock();
-            pixels[px + py * options->width] = palette[i];
-            mtx.unlock();
-        }
+        mtx.lock();
+        int py = tasks->front();
+        tasks->pop();
+        setProgress((float)(options->height - tasks->size()) / options->height);
+        mtx.unlock();
+        generatePixelRow(py);
+    }
+}
+
+void MandelbrotModel::generatePixelRow(int py)
+{
+    for (int px = 0; px < options->width; px++)
+    {
+        Complex c = transformToComplexPlane(px, py);
+        Complex z = Complex(0);
+        int i = getIterationCount(c, z);
+        pixels[px + py * options->width] = palette[i];
     }
 }
 

@@ -1,9 +1,11 @@
 #ifndef MANDELBROTMODEL_H
 #define MANDELBROTMODEL_H
 
+#include <QObject>
 #include <Qrgb>
 #include <QDebug>
 #include <complex>
+#include <queue>
 #include <cmath>
 
 using Complex = std::complex<double>;
@@ -38,8 +40,9 @@ public:
     }
 };
 
-class MandelbrotModel
+class MandelbrotModel : public QObject
 {
+    Q_OBJECT
 public:
     MandelbrotModel();
     void buildPalette();
@@ -48,15 +51,24 @@ public:
 
     void onResize();
 
+    float progress() const { return _progress; }
+    void setProgress(float progress);
+
     FractalOptions* options;
     ComplexPlane<double> defaultViewport;
     ComplexPlane<double> viewport;
     QRgb* palette;
     QRgb* pixels;
 
+signals:
+    void progressChanged(float newProgress);
+
 private:
+    float _progress;
+
     Complex transformToComplexPlane(int x, int y);
-    void generatePart(int fromX, int toX);
+    void workOnTasks(std::queue<int>* tasks);
+    void generatePixelRow(int py);
     int getIterationCount(Complex c, Complex z);
 };
 

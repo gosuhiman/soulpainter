@@ -34,4 +34,5 @@ HEADERS  += mainwindow.h \
     renderarea.h \
     mandelbrotmodel.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    fractalwidget.ui
