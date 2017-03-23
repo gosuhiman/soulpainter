@@ -7,17 +7,13 @@
 #include <complex>
 #include <queue>
 #include <cmath>
+#include "fractaloptions.h"
+#include "ColoringMode/coloringmode.h"
+#include "ColoringMode/basiccoloringmode.h"
+#include "ColoringMode/blackwhitecoloringmode.h"
+#include "ColoringMode/grayscalecoloringmode.h"
 
 using Complex = std::complex<double>;
-
-struct FractalOptions
-{
-    int maxIterations;
-    int width;
-    int height;
-    int zoomAmmount;
-    int threadCount;
-};
 
 template<typename T> class ComplexPlane
 {
@@ -45,7 +41,6 @@ class MandelbrotModel : public QObject
     Q_OBJECT
 public:
     MandelbrotModel();
-    void buildPalette();
     void generate();
     void zoomIn(float x, float y);
 
@@ -53,11 +48,13 @@ public:
 
     float progress() const { return _progress; }
     void setProgress(float progress);
+    ColoringMode* coloringMode() const { return _coloringMode; }
+    void setColoringMode(ColoringMode* coloringMode);
 
     FractalOptions* options;
+    std::vector<ColoringMode*> coloringModes;
     ComplexPlane<double> defaultViewport;
     ComplexPlane<double> viewport;
-    QRgb* palette;
     QRgb* pixels;
 
 signals:
@@ -65,6 +62,7 @@ signals:
 
 private:
     float _progress;
+    ColoringMode* _coloringMode;
 
     Complex transformToComplexPlane(int x, int y);
     void workOnTasks(std::queue<int>* tasks);

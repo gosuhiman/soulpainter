@@ -1,13 +1,11 @@
 #include "renderarea.h"
 #include "mandelbrotmodel.h"
 
-RenderArea::RenderArea(QWidget* parent, MandelbrotModel* _mandelbrotModel) : QWidget(parent)
+RenderArea::RenderArea(QWidget* parent, MandelbrotModel* _mandelbrotModel) : QWidget(parent), _mandelbrotModel(_mandelbrotModel)
 {
-    mandelbrotModel = _mandelbrotModel;
-
-    mandelbrotModel->options->width = width();
-    mandelbrotModel->options->height = height();
-    mandelbrotModel->onResize();
+    _mandelbrotModel->options->width = width();
+    _mandelbrotModel->options->height = height();
+    _mandelbrotModel->onResize();
 }
 
 QSize RenderArea::sizeHint() const
@@ -22,21 +20,23 @@ QSize RenderArea::minimumSizeHint() const
 
 void RenderArea::paintEvent(QPaintEvent *)
 {
-    QImage image = QImage((uchar*)mandelbrotModel->pixels, width(), height(), QImage::Format_ARGB32);
+    //_pixels = uchar[_mandelbrotModel->options->width * _mandelbrotModel->options->height];
+    QImage image = QImage((uchar*)_mandelbrotModel->pixels, width(), height(), QImage::Format_ARGB32);
     QPainter painter(this);
     painter.drawImage(0, 0, image);
 }
 
 void RenderArea::resizeEvent(QResizeEvent *)
 {
-    mandelbrotModel->options->width = width();
-    mandelbrotModel->options->height = height();
-    mandelbrotModel->onResize();
+    _mandelbrotModel->options->width = width();
+    _mandelbrotModel->options->height = height();
+    _mandelbrotModel->onResize();
+    this->repaint();
 }
 
 void RenderArea::mousePressEvent(QMouseEvent *event)
 {
     QPoint clickedPoint = event->pos();
-    mandelbrotModel->zoomIn(clickedPoint.x(), clickedPoint.y());
+    _mandelbrotModel->zoomIn(clickedPoint.x(), clickedPoint.y());
     this->repaint();
 }

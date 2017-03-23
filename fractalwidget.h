@@ -18,10 +18,9 @@ public:
     explicit FractalWidget(QWidget* parent = 0, MandelbrotModel* _mandelbrotModel = 0);
     ~FractalWidget();
 
-signals:
-
 public slots:
     void setProgress(float progress);
+    void setColoringMode(int colorModeIndex);
 
 protected:
 

@@ -8,16 +8,12 @@ std::mutex mtx;
 MandelbrotModel::MandelbrotModel()
 {
     options = new FractalOptions();
-    options->maxIterations = 100;
-    options->width = 800;
-    options->height = 600;
-    options->zoomAmmount = 3;
-    options->threadCount = 8;
-
-    palette = new QRgb[options->maxIterations];
     pixels = new QRgb[options->width * options->height];
 
-    buildPalette();
+    coloringModes.push_back(new BasicColoringMode(options));
+    coloringModes.push_back(new BlackWhiteColoringMode(options));
+    coloringModes.push_back(new GrayScaleColoringMode(options));
+    setColoringMode(coloringModes[0]);
 
     defaultViewport = ComplexPlane<double>(-2.4, -1.2, 0.9, 1.2);
     viewport = defaultViewport;
@@ -25,22 +21,18 @@ MandelbrotModel::MandelbrotModel()
     setProgress(0);
 }
 
+void MandelbrotModel::setColoringMode(ColoringMode* coloringMode)
+{
+    if (coloringMode != _coloringMode) {
+        _coloringMode = coloringMode;
+    }
+}
+
 void MandelbrotModel::setProgress(float progress)
 {
     if (progress != _progress) {
         _progress = progress;
         emit progressChanged(progress);
-    }
-}
-
-void MandelbrotModel::buildPalette()
-{
-    int r;
-
-    for (int i = 0; i < options->maxIterations; i++)
-    {
-        r =  i * 205.f / options->maxIterations + 50;
-        palette[i] = qRgb(r, 20, 20);
     }
 }
 
@@ -95,7 +87,7 @@ void MandelbrotModel::generatePixelRow(int py)
         Complex c = transformToComplexPlane(px, py);
         Complex z = Complex(0);
         int i = getIterationCount(c, z);
-        pixels[px + py * options->width] = palette[i];
+        pixels[px + py * options->width] = _coloringMode->getColor(i);
     }
 }
 

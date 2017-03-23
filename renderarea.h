@@ -28,7 +28,8 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
 
 private:
-    MandelbrotModel* mandelbrotModel;
+    MandelbrotModel* _mandelbrotModel;
+    uchar* _pixels;
 };
 
 #endif // RENDERAREA_H

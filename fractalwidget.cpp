@@ -10,7 +10,13 @@ FractalWidget::FractalWidget(QWidget* parent, MandelbrotModel* _mandelbrotModel)
     ui->setupUi(this);
     ui->verticalLayout->insertWidget(0, renderArea);
 
-    QObject::connect(mandelbrotModel, SIGNAL(progressChanged(float)), this, SLOT(setProgress(float)));
+    for (const ColoringMode* coloringMode : mandelbrotModel->coloringModes)
+    {
+        ui->coloringModeComboBox->addItem(coloringMode->label);
+    }
+
+    connect(mandelbrotModel, SIGNAL(progressChanged(float)), this, SLOT(setProgress(float)));
+    connect(ui->coloringModeComboBox, SIGNAL(activated(int)), this, SLOT(setColoringMode(int)));
 }
 
 FractalWidget::~FractalWidget()
@@ -18,7 +24,14 @@ FractalWidget::~FractalWidget()
     delete ui;
 }
 
+void FractalWidget::setColoringMode(int colorModeIndex)
+{
+    mandelbrotModel->setColoringMode(mandelbrotModel->coloringModes[colorModeIndex]);
+    mandelbrotModel->generate();
+    renderArea->repaint();
+}
+
 void FractalWidget::setProgress(float progress)
 {
-    ui->progressBar->setValue(progress * 100);
+    ui->generateProgressBar->setValue(progress * 100);
 }
