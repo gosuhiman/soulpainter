@@ -22,7 +22,7 @@ void BasicColoringMode::buildPalette()
     }
 }
 
-QRgb BasicColoringMode::getColor(int i)
+QRgb BasicColoringMode::getColor(int i, Complex)
 {
     return _palette[i];
 }

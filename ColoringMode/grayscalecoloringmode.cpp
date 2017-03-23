@@ -22,7 +22,7 @@ void GrayScaleColoringMode::buildPalette()
     }
 }
 
-QRgb GrayScaleColoringMode::getColor(int i)
+QRgb GrayScaleColoringMode::getColor(int i, Complex)
 {
     return _palette[i];
 }

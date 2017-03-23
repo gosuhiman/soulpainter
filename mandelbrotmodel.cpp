@@ -13,6 +13,7 @@ MandelbrotModel::MandelbrotModel()
     coloringModes.push_back(new BasicColoringMode(options));
     coloringModes.push_back(new BlackWhiteColoringMode(options));
     coloringModes.push_back(new GrayScaleColoringMode(options));
+    coloringModes.push_back(new SmoothColoringMode(options));
     setColoringMode(coloringModes[0]);
 
     defaultViewport = ComplexPlane<double>(-2.4, -1.2, 0.9, 1.2);
@@ -86,22 +87,16 @@ void MandelbrotModel::generatePixelRow(int py)
     {
         Complex c = transformToComplexPlane(px, py);
         Complex z = Complex(0);
-        int i = getIterationCount(c, z);
-        pixels[px + py * options->width] = _coloringMode->getColor(i);
+        int i = 0;
+
+        while(std::abs(z) < 2 && i < options->maxIterations)
+        {
+            z = z*z + c;
+            i++;
+        }
+
+        pixels[px + py * options->width] = _coloringMode->getColor(i, z);
     }
-}
-
-int MandelbrotModel::getIterationCount(Complex c, Complex z)
-{
-    int i = 0;
-
-    while(abs(z) < 2 && i < options->maxIterations)
-    {
-        z = z*z + c;
-        i++;
-    }
-
-    return i;
 }
 
 void MandelbrotModel::zoomIn(float x, float y)

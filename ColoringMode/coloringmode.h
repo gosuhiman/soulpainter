@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QRgb>
 #include "fractaloptions.h"
+#include <complex>
+
+using Complex = std::complex<double>;
 
 class ColoringMode : public QObject
 {
@@ -11,7 +14,7 @@ class ColoringMode : public QObject
 public:
     ColoringMode(FractalOptions* options);
     QString label;
-    virtual QRgb getColor(int i) = 0;
+    virtual QRgb getColor(int i, Complex z) = 0;
 
 protected:
     FractalOptions* _options;

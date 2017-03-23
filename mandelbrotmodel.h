@@ -12,6 +12,7 @@
 #include "ColoringMode/basiccoloringmode.h"
 #include "ColoringMode/blackwhitecoloringmode.h"
 #include "ColoringMode/grayscalecoloringmode.h"
+#include "ColoringMode/smoothcoloringmode.h"
 
 using Complex = std::complex<double>;
 
@@ -67,7 +68,6 @@ private:
     Complex transformToComplexPlane(int x, int y);
     void workOnTasks(std::queue<int>* tasks);
     void generatePixelRow(int py);
-    int getIterationCount(Complex c, Complex z);
 };
 
 #endif // MANDELBROTMODEL_H

@@ -7,7 +7,7 @@ class BlackWhiteColoringMode : public ColoringMode
 {
 public:
     BlackWhiteColoringMode(FractalOptions* options);
-    QRgb getColor(int i);
+    QRgb getColor(int i, Complex z);
 };
 
 #endif // BLACKWHITECOLORINGMODE_H

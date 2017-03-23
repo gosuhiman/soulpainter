@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     fractaloptions.cpp \
     ColoringMode/basiccoloringmode.cpp \
     ColoringMode/blackwhitecoloringmode.cpp \
-    ColoringMode/grayscalecoloringmode.cpp
+    ColoringMode/grayscalecoloringmode.cpp \
+    ColoringMode/smoothcoloringmode.cpp
 
 HEADERS  += mainwindow.h \
     fractalwidget.h \
@@ -42,7 +43,8 @@ HEADERS  += mainwindow.h \
     fractaloptions.h \
     ColoringMode/basiccoloringmode.h \
     ColoringMode/blackwhitecoloringmode.h \
-    ColoringMode/grayscalecoloringmode.h
+    ColoringMode/grayscalecoloringmode.h \
+    ColoringMode/smoothcoloringmode.h
 
 FORMS    += mainwindow.ui \
     fractalwidget.ui

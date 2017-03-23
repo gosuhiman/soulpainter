@@ -8,7 +8,7 @@ class GrayScaleColoringMode : public ColoringMode
 public:
     GrayScaleColoringMode(FractalOptions* options);
     void buildPalette();
-    QRgb getColor(int i);
+    QRgb getColor(int i, Complex z);
 
 private:
     QRgb* _palette;

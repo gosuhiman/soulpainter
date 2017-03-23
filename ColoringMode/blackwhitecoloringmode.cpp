@@ -6,7 +6,7 @@ BlackWhiteColoringMode::BlackWhiteColoringMode(FractalOptions* options) : Colori
     label = tr("Black & White");
 }
 
-QRgb BlackWhiteColoringMode::getColor(int i)
+QRgb BlackWhiteColoringMode::getColor(int i, Complex)
 {
     QRgb color;
 
